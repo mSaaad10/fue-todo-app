@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:future_task_management_app/ui/home/add_task_bottom_sheet.dart';
 import 'package:future_task_management_app/ui/home/tabs/settings_tab/settings_tab.dart';
 import 'package:future_task_management_app/ui/home/tabs/tasks_tab/tasks_tab.dart';
 
@@ -17,7 +18,9 @@ class _HomeScreenState extends State<HomeScreen> {
           title: Text('ToDo App'),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            addTaskBottomSheet();
+          },
           child: Icon(Icons.add),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -49,4 +52,11 @@ class _HomeScreenState extends State<HomeScreen> {
     TasksTab(),
     SettingsTab(),
   ];
+
+  void addTaskBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => AddTaskBottomSheet(),
+    );
+  }
 }

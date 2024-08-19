@@ -10,22 +10,17 @@ import 'package:future_task_management_app/providers/app_auth_provider.dart';
 import 'package:future_task_management_app/ui/widgets/custom_text_form_field.dart';
 import 'package:provider/provider.dart';
 
-class RegisterScreen extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
-  TextEditingController fullNameController = TextEditingController();
+class _LoginScreenState extends State<LoginScreen> {
+  TextEditingController emailController =
+      TextEditingController(text: 'moo@route.com');
 
-  TextEditingController userNameController = TextEditingController();
-
-  TextEditingController emailController = TextEditingController();
-
-  TextEditingController passwordController = TextEditingController();
-
-  TextEditingController passwordConfirmationController =
-  TextEditingController();
+  TextEditingController passwordController =
+      TextEditingController(text: '123456');
 
   bool securePassword = true;
   var formKey = GlobalKey<FormState>();
@@ -40,6 +35,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
       body: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SvgPicture.asset(
               'assets/images/route_logo.svg',
@@ -53,48 +49,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
-                      'Full Name',
-                      style: TextStyle(fontSize: 12, color: Colors.white),
-                    ),
-                    SizedBox(
-                      height: 8.h,
-                    ),
-                    CustomTextFormField(
-                      hitText: 'Enter Full name',
-                      keyboardType: TextInputType.name,
-                      validator: (input) {
-                        if (input == null || input.trim().isEmpty) {
-                          return 'Plz,, enter full name';
-                        }
-                        return null;
-                      },
-                      controller: fullNameController,
-                    ),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    Text(
-                      'User Name',
-                      style: TextStyle(fontSize: 12, color: Colors.white),
-                    ),
-                    SizedBox(
-                      height: 8.h,
-                    ),
-                    CustomTextFormField(
-                      hitText: 'Enter user name',
-                      keyboardType: TextInputType.name,
-                      validator: (input) {
-                        if (input == null || input.trim().isEmpty) {
-                          return 'Plz,, enter user name';
-                        }
-                        return null;
-                      },
-                      controller: userNameController,
-                    ),
-                    SizedBox(
-                      height: 10.h,
-                    ),
                     Text(
                       'E-mail',
                       style: TextStyle(fontSize: 12, color: Colors.white),
@@ -127,7 +81,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       height: 8.h,
                     ),
                     CustomTextFormField(
-                      //  isSecureText: securePassword,
+                      //isSecureText: securePassword,
                       hitText: 'Enter password',
                       keyboardType: TextInputType.visiblePassword,
                       validator: (input) {
@@ -152,27 +106,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     SizedBox(
                       height: 10.h,
                     ),
-                    Text(
-                      're-password',
-                      style: TextStyle(fontSize: 12, color: Colors.white),
-                    ),
-                    SizedBox(
-                      height: 8.h,
-                    ),
-                    CustomTextFormField(
-                      //isSecureText: true,
-                      controller: passwordConfirmationController,
-                      hitText: 'Password confirmation',
-                      keyboardType: TextInputType.visiblePassword,
-                      validator: (input) {
-                        if (input == null || input.trim().isEmpty) {
-                          return 'Plz, enter password';
-                        }
-                        if (input != passwordController.text) {
-                          return "Password doesn't match";
-                        }
-                      },
-                    ),
                     SizedBox(
                       height: 12.h,
                     ),
@@ -183,27 +116,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             backgroundColor: Colors.blue.shade200),
                         onPressed: () {
-                          register(
-                              fullNameController.text,
-                              userNameController.text,
-                              emailController.text,
-                              passwordController.text);
+                          login(emailController.text, passwordController.text);
                         },
-                        child: Text('Register')),
+                        child: Text('Login')),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Already have account?",
+                          "Don't have account?",
                           style: TextStyle(fontSize: 14, color: Colors.white),
                         ),
                         TextButton(
                             onPressed: () {
                               Navigator.pushNamed(
-                                  context, RouteManger.loginRoute);
+                                  context, RouteManger.registerRoute);
                             },
                             child: Text(
-                              'Login',
+                              'Create Account',
                               style: TextStyle(
                                 fontSize: 12,
                                 decoration: TextDecoration.underline,
@@ -221,8 +150,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  void register(
-      String fullName, String userName, String email, String password) async {
+  void login(String email, String password) async {
     var authProvider = Provider.of<AppAuthProvider>(context, listen: false);
     // step1 -> validate FormField
     if (formKey.currentState?.validate() == false) return;
@@ -230,28 +158,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     try {
       DialogUtils.showLoadingDialog(context);
-      await authProvider.register(fullName, userName, email, password);
+      await authProvider.login(email, password);
       DialogUtils.hideDialog(context);
-      DialogUtils.showMessageDialog(context,
-          message: 'User registered Successfuly',
-          posActionTitle: 'Ok', posAction: () {
-        Navigator.pushReplacementNamed(context, RouteManger.loginRoute);
-      });
+      DialogUtils.showMessageDialog(
+        context,
+        message:
+            'User Logged in Successfully ${authProvider.firebaseAuthUser!.uid}',
+        posActionTitle: 'Ok',
+        posAction: () {
+          Navigator.pushReplacementNamed(context, RouteManger.homeRoute);
+        },
+      );
     } on FirebaseAuthException catch (e) {
       DialogUtils.hideDialog(context);
-      if (e.code == FirebaseErrorCodes.weakPassword) {
-        DialogUtils.showMessageDialog(context,
-            message: 'The password provided is too weak.',
-            posActionTitle: 'Try again');
-      } else if (e.code == FirebaseErrorCodes.emailInUSe) {
-        DialogUtils.showMessageDialog(context,
-            message: 'The account already exists for that email.',
-            posActionTitle: 'Try again');
+      if (e.code == FirebaseErrorCodes.userNotFound ||
+          e.code == FirebaseErrorCodes.wrongPassword) {
+        DialogUtils.showMessageDialog(
+          context,
+          message: 'Wrong Email or password',
+          posActionTitle: 'Try again',
+          posAction: () {},
+        );
       }
     } catch (e) {
       DialogUtils.hideDialog(context);
-      DialogUtils.showMessageDialog(context,
-          message: e.toString(), posActionTitle: 'Try again');
+      DialogUtils.showMessageDialog(
+        context,
+        message: e.toString(),
+        posActionTitle: 'Ok',
+      );
     }
   }
 }

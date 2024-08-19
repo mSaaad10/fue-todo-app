@@ -1,35 +1,41 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 typedef Validator = String? Function(String?);
 
 class CustomTextFormField extends StatelessWidget {
-  String hitText;
+  String? hitText;
   TextInputType keyboardType;
   Validator? validator;
   TextEditingController? controller;
-  bool isSecureText;
+
+  //bool isSecureText;
   IconButton? iconButton;
+  String? label;
+  int? numberOfLines;
 
   CustomTextFormField(
-      {required this.hitText,
+      {this.hitText,
       this.keyboardType = TextInputType.text,
       this.validator,
       this.controller,
-      this.isSecureText = false,
-        this.iconButton,
-      });
+      // this.isSecureText = false,
+      this.iconButton,
+      this.label,
+      this.numberOfLines});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      obscureText: isSecureText,
+      maxLines: numberOfLines,
+      //minLines: numberOfLines,
+      // obscureText: isSecureText,
       controller: controller,
       validator: validator,
       keyboardType: keyboardType,
       decoration: InputDecoration(
         suffixIcon: iconButton,
         hintText: hitText,
+        labelText: label,
         hintStyle: TextStyle(
           fontSize: 12,
         ),

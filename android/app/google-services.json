@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "50808453515",
+    "project_id": "future-academy-todo-app",
+    "storage_bucket": "future-academy-todo-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:50808453515:android:da7d45f931371f6936d78e",
+        "android_client_info": {
+          "package_name": "com.example.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkJeVrGliYFLNhUsARkEXgeV45MX-yT8s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

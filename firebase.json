@@ -1,0 +1,22 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "future-academy-todo-app",
+          "appId": "1:50808453515:android:da7d45f931371f6936d78e",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "future-academy-todo-app",
+          "configurations": {
+            "android": "1:50808453515:android:da7d45f931371f6936d78e",
+            "ios": "1:50808453515:ios:8833bea134223ad336d78e"
+          }
+        }
+      }
+    }
+  }
+}
